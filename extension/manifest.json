@@ -1,0 +1,15 @@
+  {
+    "name": "BlockIt",
+    "version": "1.0",
+    "description": "Prevent Youtube addiction while utilize it as a source for developing yourself!",
+    "manifest_version": 2,
+    "browser_action": {
+      "default_title": "Block It!",
+      "default_popup": "popup.html"
+    },
+    "permissions": ["storage"],
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+    }
+  }
