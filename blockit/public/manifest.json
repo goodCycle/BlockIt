@@ -1,15 +1,18 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
+  "name": "BlockIt",
+  "version": "1.0",
+  "manifest_version": 2,
+  "browser_action": {},
+  "content_security_policy": "script-src 'self' 'sha256-5As4+3YpY62+l38PsxCEkjB1R4YtyktBtRScTJ3fyLU='; object-src 'self'",
+  "content_scripts" : [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "matches":  [ "<all_urls>" ],
+      "css": ["/static/css/app.css"],
+      "js": ["/static/js/0.chunk.js", "/static/js/content.js"]
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background": {
+    "scripts": ["app/background.js"]
+  },
+  "web_accessible_resources": ["/static/css/content.css"]
 }
