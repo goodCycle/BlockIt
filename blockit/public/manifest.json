@@ -6,12 +6,13 @@
   "content_security_policy": "script-src 'self' 'sha256-5As4+3YpY62+l38PsxCEkjB1R4YtyktBtRScTJ3fyLU='; object-src 'self'",
   "content_scripts" : [
     {
-      "matches":  ["https://github.com/"],
-      "css": ["/static/css/app.css", "/static/css/content.css"],
+      "matches":  [ "<all_urls>" ],
+      "css": ["/static/css/app.css"],
       "js": ["/static/js/0.chunk.js", "/static/js/content.js"]
     }
   ],
   "background": {
     "scripts": ["app/background.js"]
-  }
+  },
+  "web_accessible_resources": ["/static/css/content.css"]
 }
