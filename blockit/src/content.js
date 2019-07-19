@@ -22,12 +22,22 @@ class Main extends React.Component {
           // Callback is invoked with iframe's window and document instances
           ({document, window}) => {
             // Render Children
+            var url = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=HTDuhLv3GOM&key=AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo"
+            var categoryId = "hoo"
             return (
-              <div className={'my-extension'}>
-                <h1>Hello world</h1>
+              <div className="my-extension">
+                <button 
+                  onClick={() => {
+                    // sendHttpRequest(url);
+                    categoryId = sendHttpRequest(url);
+                  }}
+                >
+                  Click!
+                </button>
+                <h1>{categoryId}</h1>
               </div>
             )}
-          }
+          } 
         </FrameContextConsumer> 
       </Frame>
     )
@@ -47,6 +57,21 @@ chrome.runtime.onMessage.addListener(
     }
   }
 );
+
+function requestCategoryId () {
+  // alert(JSON.parse(this.responseText));
+  var result = JSON.parse(this.responseText);
+  var categoryId = result.items[0].snippet.categoryId;
+  console.log(categoryId);
+  return categoryId;
+}
+
+function sendHttpRequest (url) {
+  var onRequest = new XMLHttpRequest();
+  onRequest.addEventListener("load", requestCategoryId);
+  onRequest.open("GET", url);
+  onRequest.send();
+}
 
 function toggle(){
   if(app.style.display === "none"){
