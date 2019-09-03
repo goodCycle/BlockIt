@@ -2,6 +2,7 @@
   "name": "blockit",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://cors-anywhere.herokuapp.com",
   "dependencies": {
     "@babel/core": "7.4.3",
     "@svgr/webpack": "4.1.0",
@@ -14,6 +15,7 @@
     "babel-preset-react-app": "^9.0.0",
     "camelcase": "^5.2.0",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
+    "cors": "^2.8.5",
     "css-loader": "2.1.1",
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
@@ -44,6 +46,7 @@
     "postcss-safe-parser": "4.0.1",
     "react": "^16.8.6",
     "react-app-polyfill": "^1.0.1",
+    "react-bootstrap": "^1.0.0-beta.2",
     "react-dev-utils": "^9.0.1",
     "react-dom": "^16.8.6",
     "react-frame-component": "^4.1.0",

@@ -4,10 +4,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
+//import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
 import "./content.css";
 
 class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      url: '/https://www.googleapis.com/youtube/v3/videos?part=snippet&id=HTDuhLv3GOM&key=AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo',
+      categoryId: 'hoo'
+    };
+  }
+
+  requestCategoryId = (result) => {
+    var categoryId = result.items[0].snippet.categoryId;
+    this.setState({ categoryId });
+  }
+  
   render() {
+    console.log('rendering...');
     return (
       <Frame head={[
         <link
@@ -23,11 +38,29 @@ class Main extends React.Component {
           ({document, window}) => {
             // Render Children
             return (
-              <div className={'my-extension'}>
-                <h1>Hello world</h1>
+              <div className="my-extension">
+                <button 
+                  onClick={() => {
+                    fetch(this.state.url, {
+                      method: "GET",
+                      headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                      }
+                    })
+                    .then((response) => {
+                      if (!response.ok) throw response.statusText;
+                      return response.json();
+                    })
+                    .then((responseAsJson) => this.requestCategoryId(responseAsJson))
+                    .catch((error) => console.log(error));
+                  }}
+                >
+                  Click!
+                </button>
+                <h1>{this.state.categoryId}</h1>
               </div>
             )}
-          }
+          } 
         </FrameContextConsumer> 
       </Frame>
     )
@@ -43,6 +76,7 @@ app.style.display = "none";
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if( request.message === "clicked_browser_action") {
+      // alert("clicked browser!");
       toggle();
     }
   }
@@ -55,3 +89,7 @@ function toggle(){
     app.style.display = "none";
   }
 }
+
+// yarn start, yarn build
+// load chrome extensions again
+// load localhost:3000 and click the icon
