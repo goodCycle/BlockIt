@@ -11,9 +11,28 @@ class Main extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      url: '/https://www.googleapis.com/youtube/v3/videos?part=snippet&id=HTDuhLv3GOM&key=AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo',
+      url: '/https://www.googleapis.com/youtube/v3/videos?part=snippet&id=9YifCshtOqg&key=AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo',
       categoryId: 'hoo'
     };
+  }
+
+  componentDidMount = () => {
+    window.addEventListener('click', this.searchVideoID);
+  }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('click', this.searchVideoID);
+  }
+
+  searchVideoID = () =>  {
+    if (window.location.hostname === 'www.youtube.com' && window.location.search !== '') {
+      var video_id = window.location.search.split('v=')[1];
+      var ampersandPosition = video_id.indexOf('&');
+      if(ampersandPosition !== -1) {
+        video_id = video_id.substring(0, ampersandPosition);
+      }
+      console.log('videoID is ', video_id);
+    }
   }
 
   requestCategoryId = (result) => {
@@ -44,6 +63,9 @@ class Main extends React.Component {
                     console.log('click!', this.state.url)
                     fetch(this.state.url, {
                       method: "GET",
+                      headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                      }
                     })
                     .then((response) => {
                       if (!response.ok) throw response.statusText;
