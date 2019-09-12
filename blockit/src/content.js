@@ -41,16 +41,15 @@ class Main extends React.Component {
               <div className="my-extension">
                 <button 
                   onClick={() => {
+                    console.log('click!', this.state.url)
                     fetch(this.state.url, {
                       method: "GET",
-                      headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                      }
                     })
                     .then((response) => {
                       if (!response.ok) throw response.statusText;
                       return response.json();
                     })
+                    // .then((text) => console.log(text))
                     .then((responseAsJson) => this.requestCategoryId(responseAsJson))
                     .catch((error) => console.log(error));
                   }}
