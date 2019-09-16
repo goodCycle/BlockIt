@@ -36,7 +36,8 @@ class Main extends React.Component {
   }
 
   requestCategoryId = (result) => {
-    var categoryId = result.items[0].snippet.categoryId;
+    console.log(result);
+    var categoryId = result.data.items[0].snippet.categoryId;
     this.setState({ categoryId });
   }
   
@@ -60,18 +61,14 @@ class Main extends React.Component {
               <div className="my-extension">
                 <button 
                   onClick={() => {
-                    console.log('click!', this.state.url)
-                    fetch(this.state.url, {
-                      method: "GET",
-                      headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                    //console.log('click!', this.state.url)
+                    
+                    fetch('/youtube/get-category-id', {
+                      headers:{
+                        "accepts":"application/json"
                       }
                     })
-                    .then((response) => {
-                      if (!response.ok) throw response.statusText;
-                      return response.json();
-                    })
-                    // .then((text) => console.log(text))
+                    .then((response) => response.json())
                     .then((responseAsJson) => this.requestCategoryId(responseAsJson))
                     .catch((error) => console.log(error));
                   }}
