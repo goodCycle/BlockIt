@@ -4,7 +4,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
-//import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
+import { Container, Form, Button, Alert, Modal } from 'react-bootstrap';
 import "./content.css";
 
 class Main extends React.Component {
@@ -12,7 +12,8 @@ class Main extends React.Component {
     super(props);
     this.state = {
       url: '/https://www.googleapis.com/youtube/v3/videos?part=snippet&id=9YifCshtOqg&key=AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo',
-      categoryId: 'hoo'
+      categoryId: 'hoo',
+      videoId: null
     };
   }
 
@@ -26,12 +27,13 @@ class Main extends React.Component {
 
   searchVideoID = () =>  {
     if (window.location.hostname === 'www.youtube.com' && window.location.search !== '') {
-      var video_id = window.location.search.split('v=')[1];
-      var ampersandPosition = video_id.indexOf('&');
+      var videoId = window.location.search.split('v=')[1];
+      var ampersandPosition = videoId.indexOf('&');
       if(ampersandPosition !== -1) {
-        video_id = video_id.substring(0, ampersandPosition);
+        videoId = videoId.substring(0, ampersandPosition);
       }
-      console.log('videoID is ', video_id);
+      console.log('videoID is ', videoId);
+      this.setState({ videoId: videoId })
     }
   }
 
@@ -39,6 +41,24 @@ class Main extends React.Component {
     console.log(result);
     var categoryId = result.data.items[0].snippet.categoryId;
     this.setState({ categoryId });
+  }
+
+  getCategoryId = () => {
+    console.log('get', this.state.videoId);
+  
+    let reqBody = {
+      videoId: this.state.videoId,
+    };
+    fetch('/youtube/get-category-id', {
+      method: 'POST',
+      body: JSON.stringify(reqBody),
+      headers:{
+        "accepts":"application/json"
+      }
+    })
+    .then((response) => response.json())
+    .then((responseAsJson) => this.requestCategoryId(responseAsJson))
+    .catch((error) => console.log(error));
   }
   
   render() {
@@ -59,24 +79,14 @@ class Main extends React.Component {
             // Render Children
             return (
               <div className="my-extension">
-                <button 
-                  onClick={() => {
-                    //console.log('click!', this.state.url)
-                    
-                    fetch('/youtube/get-category-id', {
-                      headers:{
-                        "accepts":"application/json"
-                      }
-                    })
-                    .then((response) => response.json())
-                    .then((responseAsJson) => this.requestCategoryId(responseAsJson))
-                    .catch((error) => console.log(error));
-                  }}
+                <Button 
+                  onClick={() => this.getCategoryID()}
                 >
                   Click!
-                </button>
-                <h1>{this.state.categoryId}</h1>
+                </Button>
+                <Container>{this.state.categoryId}</Container>
               </div>
+             
             )}
           } 
         </FrameContextConsumer> 
