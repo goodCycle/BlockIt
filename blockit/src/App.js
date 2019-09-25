@@ -1,26 +1,65 @@
-import React from 'react';
+/* global chrome */
+
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      categoryId: null,
+      videoId: null
+    }
+  }
+
+  componentDidMount() {
+    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+      const url = new URL(tabs[0].url);
+      this.setYoutubeVideoId(url);
+      this.getCategoryId();
+    });
+  }
+
+  setYoutubeVideoId = (url) =>  {
+    if (url.hostname === 'www.youtube.com' && url.search !== '') {
+      var videoId = url.search.split('v=')[1];
+      var ampersandPosition = videoId.indexOf('&');
+      if(ampersandPosition !== -1) {
+        videoId = videoId.substring(0, ampersandPosition);
+      }
+      console.log('videoID is ', videoId);
+      this.setState({ videoId: videoId })
+    }
+  }
+
+  getCategoryId() {
+    axios.get('https://www.googleapis.com/youtube/v3/videos',{
+      params: {
+        part: 'snippet',
+        id: this.state.videoId,
+        key: 'AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo'
+      }})
+    .then(result => {
+      var categoryId = result.data.items[0].snippet.categoryId;
+      this.setState({ categoryId })
+    }).catch(error => {
+      console.log('Error in obtaining headlines', error);
+    });
+  }
+
+  render() {
+    let categoryNames = ['', 'Film & Animation', 'Autos & Vehicles', '', '', '', '', '', '', '', 'Music', '', '', '', '', 'Pets & Animals', '', 'Sports', 'Short Movies', 'Travel & Events', 'Gaming', 'Videoblogging', 'People & Blogs', 'Comedy', 'Entertainment', 'News & Politics', 'Howto & Style', 'Education', 'Science & Technology', 'Nonprofits & Activism', 'Movies', 'Anime/Animation', 'Action/Adventure', 'Classics', 'Comedy', 'Documentary', 'Drama', 'Family', 'Foreign', 'Horror', 'Sci-Fi/Fantasy', 'Thriller', 'Shorts', 'Shows', 'Trailers']
+
+    return (
+      <div className="App">
+        <h1 className="App-title">{this.state.domain}</h1>
+        Category ID is: <br></br>
+        {categoryNames[this.state.categoryId]}
+      </div>
+    );
+  }
 }
 
 export default App;

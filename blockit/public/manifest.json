@@ -1,18 +1,16 @@
 {
-  "name": "BlockIt",
-  "version": "1.0",
+  "name": "Headline Fetcher",
   "manifest_version": 2,
-  "browser_action": {},
-  "content_security_policy": "script-src 'self' 'sha256-5As4+3YpY62+l38PsxCEkjB1R4YtyktBtRScTJ3fyLU='; object-src 'self'",
-  "content_scripts" : [
-    {
-      "matches":  [ "<all_urls>" ],
-      "css": ["/static/css/app.css"],
-      "js": ["/static/js/0.chunk.js", "/static/js/content.js"]
-    }
-  ],
+  "version": "0.0.1",
+  "description": "Retrieves headlines relevant to the website you are currently on",
+  "content_scripts": [{
+    "js": ["content.js" ],
+    "matches": ["<all_urls>"]
+   }],
+  "content_security_policy": "script-src 'self' 'sha256-di1UBhtad0cZsuIzaz+xs8Y/Euf5CnxkrX2V4kn37jI='; object-src 'self'",
   "background": {
-    "scripts": ["app/background.js"]
-  },
-  "web_accessible_resources": ["/static/css/content.css"]
+    "scripts": ["background.js"]
+   },
+  "permissions": ["contextMenus", "tabs"],
+  "web_accessible_resources" : ["*.html"]
 }
