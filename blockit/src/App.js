@@ -35,7 +35,8 @@ class App extends Component {
   }
 
   getCategoryId() {
-    axios.get('https://www.googleapis.com/youtube/v3/videos',{
+    const youtubeVideoInfoUrl = 'https://www.googleapis.com/youtube/v3/videos';
+    axios.get(youtubeVideoInfoUrl, {
       params: {
         part: 'snippet',
         id: this.state.videoId,
@@ -45,7 +46,7 @@ class App extends Component {
       var categoryId = result.data.items[0].snippet.categoryId;
       this.setState({ categoryId })
     }).catch(error => {
-      console.log('Error in obtaining headlines', error);
+      console.log('Error in get youtube video info', error);
     });
   }
 
@@ -55,8 +56,11 @@ class App extends Component {
     return (
       <div className="App">
         <h1 className="App-title">{this.state.domain}</h1>
-        Category ID is: <br></br>
-        {categoryNames[this.state.categoryId]}
+        <h3>
+          Category ID is: <br></br>
+          <br></br>
+          {categoryNames[this.state.categoryId]}
+        </h3>
       </div>
     );
   }
