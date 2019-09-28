@@ -55,7 +55,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h1 className="App-title">{this.state.domain}</h1>
+        <h1 className="App-title">Block It</h1>
         <h3>
           Category ID is: <br></br>
           <br></br>
