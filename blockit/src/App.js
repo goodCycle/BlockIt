@@ -1,7 +1,7 @@
 /* global chrome */
 
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { Container, Button } from 'react-bootstrap';
 import './App.css';
 import axios from 'axios';
 
@@ -21,6 +21,7 @@ class App extends Component {
       this.getCategoryId();
     });
   }
+  // unmount할 때는 더해준 리스너 빼주기....
 
   setYoutubeVideoId = (url) =>  {
     if (url.hostname === 'www.youtube.com' && url.search !== '') {
@@ -34,7 +35,7 @@ class App extends Component {
     }
   }
 
-  getCategoryId() {
+  getCategoryId = () => {
     const youtubeVideoInfoUrl = 'https://www.googleapis.com/youtube/v3/videos';
     axios.get(youtubeVideoInfoUrl, {
       params: {
@@ -50,18 +51,37 @@ class App extends Component {
     });
   }
 
+  onCloseIframe = () => {
+    console.log('onCloseIframe');
+    // console.log('window.parent', window.parent);
+    // console.log('window.parent.document', window.parent.document);
+    // console.log('window.parent.document.getElementById', window.document.getElementById('dialog'));
+    chrome.tabs.query({active: true, currentWindow: true, status: 'complete'}, tabs => {
+      chrome.tabs.sendMessage(tabs[0].id, { type: 'closeIframe', didClick: 'True' });
+    });
+  }
+
   render() {
     let categoryNames = ['', 'Film & Animation', 'Autos & Vehicles', '', '', '', '', '', '', '', 'Music', '', '', '', '', 'Pets & Animals', '', 'Sports', 'Short Movies', 'Travel & Events', 'Gaming', 'Videoblogging', 'People & Blogs', 'Comedy', 'Entertainment', 'News & Politics', 'Howto & Style', 'Education', 'Science & Technology', 'Nonprofits & Activism', 'Movies', 'Anime/Animation', 'Action/Adventure', 'Classics', 'Comedy', 'Documentary', 'Drama', 'Family', 'Foreign', 'Horror', 'Sci-Fi/Fantasy', 'Thriller', 'Shorts', 'Shows', 'Trailers']
 
     return (
-      <div className="App">
-        <h1 className="App-title">Block It</h1>
-        <h3>
-          Category ID is: <br></br>
-          <br></br>
-          {categoryNames[this.state.categoryId]}
-        </h3>
-      </div>
+      <Container>
+        <div className="App">
+          <h1 className="App-title">Block It</h1>
+          <h3>
+            Category ID is: <br></br>
+            <br></br>
+            {categoryNames[this.state.categoryId]}
+          </h3>
+        </div>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => this.onCloseIframe()} 
+        >
+          X
+        </Button>
+      </Container> 
     );
   }
 }
