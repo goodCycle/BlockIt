@@ -1,14 +1,13 @@
 chrome.runtime.onMessage.addListener(request => {
   console.log('request', request);
-  if (request.type === 'urlUpdate') {
-    console.log('urlUpdate!');
-    const url = request.url;
-    const isYoutube = url.includes('www.youtube.com');
-    console.log('url split', url.split('v=')[1]);
-    const hasVideoId = url.split('v=')[1] !== undefined;
-    if (isYoutube && hasVideoId) {
+  if (request.type === 'getIntoYoutubeVideo') {
+    console.log(request.type);
+    console.log('DOM', document);
+    console.log('modal is here?', document.getElementById('modal'));
+    if (document.getElementById('modal') == null) {
       const modal = document.createElement('dialog');
-      modal.setAttribute("style", "height:60%; width: 60%");
+      modal.id = 'modal';
+      modal.setAttribute("style", "height:60%; width: 60%; position: fixed;");
       document.body.appendChild(modal); ////
 
       let iframe = document.createElement('iframe')
@@ -18,17 +17,22 @@ chrome.runtime.onMessage.addListener(request => {
       iframe.style.height = '100%'
       iframe.style.border = '0px'
       modal.appendChild(iframe);
-      
+
       if (!modal.open) {
+        console.log('show modal');
         modal.showModal();
       }
     }
-  }
+}
   if (request.type === 'closeIframe') {
+    console.log(request.type);
     if (request.didClick === 'True') {
-      const modal = document.querySelector('dialog');
+      const modal = document.getElementById('modal');
+      // modal이 떠 있어도 close가 안 되는 경우가 있음
+      console.log('modal open?', modal.open);
       if (modal.open) {
-        modal.close()
+        modal.close();
+        modal.remove();
       }
     }
   }

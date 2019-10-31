@@ -1,7 +1,7 @@
 /* global chrome */
 
 import React, { Component } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Badge, Col, Row } from 'react-bootstrap';
 import './App.css';
 import axios from 'axios';
 
@@ -15,6 +15,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log('component did mount');
     chrome.tabs.query({active: true, currentWindow: true}, tabs => {
       const url = new URL(tabs[0].url);
       this.setYoutubeVideoId(url);
@@ -52,11 +53,8 @@ class App extends Component {
   }
 
   onCloseIframe = () => {
-    console.log('onCloseIframe');
-    // console.log('window.parent', window.parent);
-    // console.log('window.parent.document', window.parent.document);
-    // console.log('window.parent.document.getElementById', window.document.getElementById('dialog'));
     chrome.tabs.query({active: true, currentWindow: true, status: 'complete'}, tabs => {
+      console.log('tabs in close', tabs);
       chrome.tabs.sendMessage(tabs[0].id, { type: 'closeIframe', didClick: 'True' });
     });
   }
@@ -66,21 +64,23 @@ class App extends Component {
 
     return (
       <Container>
-        <div className="App">
-          <h1 className="App-title">Block It</h1>
+        <Row className="justify-content-end">
+          <Button
+            variant="light"
+            size="sm"
+            onClick={() => this.onCloseIframe()} 
+          >
+            X
+          </Button>
+        </Row>
+        <Row className="justify-content-center">
+          <h1><Badge variant="danger">BLOCK IT</Badge></h1>
+        </Row>
+        <Row className="justify-content-center">
           <h3>
-            Category ID is: <br></br>
-            <br></br>
-            {categoryNames[this.state.categoryId]}
+            Category ID is: {categoryNames[this.state.categoryId]}
           </h3>
-        </div>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => this.onCloseIframe()} 
-        >
-          X
-        </Button>
+        </Row>
       </Container> 
     );
   }
