@@ -10,31 +10,42 @@ class App extends Component {
     super(props);
     this.state = {
       categoryId: null,
-      videoId: null
+      videoId: null,
+      isLoaded: false,
     }
   }
 
   componentDidMount() {
-    console.log('component did mount');
-    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-      const url = new URL(tabs[0].url);
-      this.setYoutubeVideoId(url);
-      this.getCategoryId();
-    });
+    // chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+    //   const url = new URL(tabs[0].url);
+    //   this.setYoutubeVideoId(url);
+    //   this.getCategoryId();
+    // });
+    //chrome.runtime.onMessage.addListener(this.handleMessage);
   }
-  // unmount할 때는 더해준 리스너 빼주기....
 
-  setYoutubeVideoId = (url) =>  {
-    if (url.hostname === 'www.youtube.com' && url.search !== '') {
-      var videoId = url.search.split('v=')[1];
-      var ampersandPosition = videoId.indexOf('&');
-      if(ampersandPosition !== -1) {
-        videoId = videoId.substring(0, ampersandPosition);
-      }
-      console.log('videoID is ', videoId);
-      this.setState({ videoId: videoId })
-    }
-  }
+  // handleMessage = (request) => {
+  //   if (request.type === 'getIntoYoutubeVideo') {
+  //     this.setState({ videoId: request.videoId, isLoaded: true });
+  //     this.getCategoryId();
+  //   }
+  // }
+
+  // unmount할 때는 더해준 리스너 빼주기....
+  // componentWillUnmount() {
+  //   chrome.runtime.onMessage.removeListener(this.handleMessage);
+  // }
+  // setYoutubeVideoId = (url) =>  {
+  //   if (url.hostname === 'www.youtube.com' && url.search !== '') {
+  //     var videoId = url.search.split('v=')[1];
+  //     var ampersandPosition = videoId.indexOf('&');
+  //     if(ampersandPosition !== -1) {
+  //       videoId = videoId.substring(0, ampersandPosition);
+  //     }
+  //     console.log('videoID is ', videoId);
+  //     this.setState({ videoId: videoId })
+  //   }
+  // }
 
   getCategoryId = () => {
     const youtubeVideoInfoUrl = 'https://www.googleapis.com/youtube/v3/videos';
@@ -85,5 +96,14 @@ class App extends Component {
     );
   }
 }
+
+chrome.runtime.onMessage.addListener(request => {
+  console.log('App updateVideoId on!');
+  if (request.type === 'updateVideoId') {
+    this.setState({ videoId: request.videoId, isLoaded: true });
+    this.getCategoryId();
+  }
+  // update가 안된다 이말씀..modal을 재활용하고 싶다고..
+});
 
 export default App;

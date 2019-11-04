@@ -1,5 +1,20 @@
 chrome.runtime.onMessage.addListener(request => {
   console.log('request', request);
+  if (request.type === 'injectDialogToDOM') {
+    console.log('inject dialog');
+    const modal = document.createElement('dialog');
+    modal.id = 'modal';
+    modal.setAttribute("style", "height:60%; width: 60%; position: fixed;");
+    document.body.appendChild(modal); ////
+
+    let iframe = document.createElement('iframe')
+    iframe.id = 'blockit-iframe'
+    iframe.src = chrome.extension.getURL("index.html");
+    iframe.style.width = '100%'
+    iframe.style.height = '100%'
+    iframe.style.border = '0px'
+    modal.appendChild(iframe);
+  }
   if (request.type === 'getIntoYoutubeVideo') {
     console.log(request.type);
     console.log('DOM', document);
@@ -17,13 +32,22 @@ chrome.runtime.onMessage.addListener(request => {
       iframe.style.height = '100%'
       iframe.style.border = '0px'
       modal.appendChild(iframe);
-
+      
+      chrome.runtime.sendMessage(chrome.runtime.id, {type: 'updateVideoId', videoId: request.videoId });
       if (!modal.open) {
-        console.log('show modal');
+        console.log('update modal');
         modal.showModal();
       }
     }
-}
+    else {
+      const modal = document.getElementById('modal');
+      chrome.runtime.sendMessage(chrome.runtime.id, {type: 'updateVideoId', videoId: request.videoId });
+      if (!modal.open) {
+        console.log('update modal');
+        modal.showModal();
+      }
+    }
+  }
   if (request.type === 'closeIframe') {
     console.log(request.type);
     if (request.didClick === 'True') {
@@ -32,7 +56,7 @@ chrome.runtime.onMessage.addListener(request => {
       console.log('modal open?', modal.open);
       if (modal.open) {
         modal.close();
-        modal.remove();
+        // modal.remove();
       }
     }
   }

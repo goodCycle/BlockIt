@@ -9,8 +9,14 @@
    }],
   "content_security_policy": "script-src 'self' 'sha256-di1UBhtad0cZsuIzaz+xs8Y/Euf5CnxkrX2V4kn37jI='; object-src 'self'",
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js"],
+    "persistent": false
    },
-  "permissions": ["contextMenus", "tabs"],
+  "permissions": [
+    "contextMenus", 
+    "tabs", 
+    "webNavigation",
+    "activeTab"
+  ],
   "web_accessible_resources" : ["*.html"]
 }
