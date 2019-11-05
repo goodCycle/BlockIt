@@ -1,30 +1,47 @@
+addModalToDOM = () => {
+  const modal = document.createElement('dialog');
+  modal.id = 'modal';
+  modal.setAttribute("style", "height:60%; width: 60%; position: fixed;");
+  document.body.appendChild(modal);
+
+  let iframe = document.createElement('iframe')
+  iframe.id = 'blockit-iframe'
+  iframe.src = chrome.extension.getURL("index.html");
+  iframe.style.width = '100%'
+  iframe.style.height = '100%'
+  iframe.style.border = '0px'
+  modal.appendChild(iframe);
+}
+
 chrome.runtime.onMessage.addListener(request => {
-  if (request.type = 'urlUpdate') {
-    const url = request.url;
-    const isYoutube = url.includes('www.youtube.com');
-    console.log('url split', url.split('v=')[1]);
-    const hasVideoId = url.split('v=')[1] !== undefined;
-    if (isYoutube && hasVideoId) {
-      const modal = document.createElement('dialog');
-      modal.setAttribute("style", "height:60%; width: 60%");
-      modal.innerHTML =
-        `<iframe id="BlockIt" style="height:100%"></iframe>
-          <div style="position:absolute; top:0px; left:5px;">  
-            <button style="align-center: 'center'">x</button>
-          </div>`;
-      document.body.appendChild(modal);
-      const dialog = document.querySelector("dialog");
-      if (!dialog.open) {
-        dialog.showModal();
+  console.log('request', request);
+  if (request.type === 'getIntoYoutubeVideo') {
+    console.log(request.type);
+    console.log('DOM', document);
+    
+    if (document.getElementById('modal') == null) {
+      addModalToDOM();
+    }
+    chrome.runtime.sendMessage(
+      chrome.runtime.id, 
+      {type: 'updateVideoId', videoId: request.videoId }
+    );
+  }
+  if (request.type === 'doneUpdateCategoryId') {
+    const modal = document.getElementById('modal');
+    console.log('modal open?', modal.open);
+    if (modal) {
+      modal.showModal();
+    }
+  }
+  if (request.type === 'closeIframe') {
+    console.log(request.type);
+    if (request.didClick === 'True') {
+      const modal = document.getElementById('modal');
+
+      if (modal.open) {
+        modal.close();
       }
-      
-      const iframe = document.getElementById("BlockIt");
-      iframe.src = chrome.extension.getURL("index.html");
-      iframe.frameBorder = 0;
-      
-      dialog.querySelector("button").addEventListener("click", () => {
-        dialog.close();
-      })
     }
   }
 });
