@@ -4,12 +4,6 @@ chrome.runtime.onInstalled.addListener(function() {
     title: 'BlockIt',
     contexts: ['all']
   });
-  
-  //React 모달을 DOM에 주입하는 명령
-  chrome.tabs.query({active: true, currentWindow: true, status: 'complete'}, tabs => {
-    console.log('onInstall');
-    chrome.tabs.sendMessage(tabs[0].id, {type: 'injectDialogToDOM'});
-  });
 });
 
 
