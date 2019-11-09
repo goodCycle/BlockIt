@@ -43,7 +43,7 @@ class App extends Component {
         params: {
           part: 'snippet',
           id: this.state.videoId,
-          key: 'AIzaSyDvh_LgkZuQxxAg2tvCN_DHKsrU8STK_jo'
+          key: process.env.REACT_APP_YOUTUBE_API
         }
       });
   
@@ -79,7 +79,8 @@ class App extends Component {
         </Row>
         <Row className="justify-content-center">
           <h3>
-            Category ID is: {categoryNames[this.state.categoryId]}
+            It is {categoryNames[this.state.categoryId]} video.
+            <br></br> You block it to watch!
           </h3>
         </Row>
       </Container> 
